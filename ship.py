@@ -23,6 +23,7 @@ class Ship:
         self.moving_right = False
         self.moving_left = False
 
+
     def update(self):
         """
         Оновити позицію корабля на основі
@@ -37,6 +38,13 @@ class Ship:
         # Оновити об'єкт rect з self.x.
         self.rect.x = self.x
 
+
     def blitme(self):
         """Намалювати корабель у поточному положенні."""
         self.screen.blit(self.image, self.rect)
+
+    
+    def center_ship(self):
+        """Відцентрувати корабель на екрані."""
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)
