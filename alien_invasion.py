@@ -7,6 +7,7 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -36,6 +37,10 @@ class AlienInvasion:
 
         self._create_fleet()
 
+        # Створити кнопку Play
+        self.play_button = Button(self, "Play")
+
+
 
     def _create_fleet(self):
         """Створити флот прибульців."""
@@ -58,6 +63,7 @@ class AlienInvasion:
                 self._create_alien(alien_number, row_number)
 
 
+
     def _create_alien(self, alien_number, row_number):
         """Створити прибульця та поставити його в ряд."""
         alien = Alien(self)
@@ -66,6 +72,7 @@ class AlienInvasion:
         alien.rect.x = alien.x
         alien.rect.y = alien_height + 2 * alien_height * row_number
         self.aliens.add(alien)
+
 
 
     def run_game(self):
@@ -78,6 +85,7 @@ class AlienInvasion:
                 self._update_aliens()
 
             self._update_screen()
+
 
 
     def _update_aliens(self):
@@ -95,6 +103,7 @@ class AlienInvasion:
         self._check_alien_bottom()
 
 
+
     def _update_bullets(self):
         """Оновити позицію куль та позбавитися старих куль."""
         # Оновити позиції куль.
@@ -109,6 +118,7 @@ class AlienInvasion:
         self._check_bullet_alien_collisions()
 
 
+
     def _check_bullet_alien_collisions(self):
         """Реагувати на зіткнення куль з прибульцями."""
         # Видалити всі кулі та прибульців, що зіткнулися.
@@ -119,7 +129,9 @@ class AlienInvasion:
             # Знищити наявні кулі та створити новий флот.
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
         
+
 
     def _check_events(self):
         """Реагувати на натискання клавіш та подій миші."""
@@ -130,6 +142,34 @@ class AlienInvasion:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+
+
+
+    def _check_play_button(self, mouse_pos):
+        """Розпочати нову гру, коли гравець клацне Play."""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            # Анулювати статистику гри.
+            self.settings.initialize_dynamic_settings()
+            
+            # ВМИКАЄМО ГРУ: скидаємо статистику та активуємо статус!
+            self.stats.reset_stats()
+            self.stats.game_active = True
+
+            # Позбавитися надлишку прибульців та куль.
+            self.aliens.empty()
+            self.bullets.empty()
+
+            # Створити новий флот та помістити корабель у центр.
+            self._create_fleet()
+            self.ship.center_ship()
+
+            # Сховати курсор миші.
+            pygame.mouse.set_visible(False)
+
 
 
     def _check_keydown_events(self, event):
@@ -144,6 +184,7 @@ class AlienInvasion:
             self._fire_bullet()
 
 
+
     def _check_keyup_events(self, event):
         """Реагувати, коли клавіша не натиснута."""
         if event.key == pygame.K_RIGHT:
@@ -152,11 +193,13 @@ class AlienInvasion:
             self.ship.moving_left = False
 
 
+
     def _fire_bullet(self):
         """Створити нову кулю та додати її до групи куль."""
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
+
 
 
     def _check_fleet_edges(self):
@@ -169,11 +212,13 @@ class AlienInvasion:
                 break
 
 
+
     def _change_fleet_direction(self):
         """Спуск всього флоту та зміна його напрямку."""
         for alien in self.aliens.sprites():
             alien.rect.y += self.settings.fleet_drop_speed
         self.settings.fleet_direction *= -1     
+
 
 
     def _update_screen(self):
@@ -184,8 +229,13 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
 
+        # Намалювати кнопку Play, якщо гра неактивна.
+        if not self.stats.game_active:
+            self.play_button.draw_button()
+
         # Показати останній намальований екран.
         pygame.display.flip()
+
 
 
     def _ship_hit(self):
@@ -206,6 +256,7 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.stats.game_active = False
+            pygame.mouse.set_visible(True)
 
     
 

@@ -7,8 +7,8 @@ class GameStats:
         self.reset_stats()
 
         # Розпочати гру в активному стані.
-        self.game_active = True
- 
+        # self.game_active = True
+        self.game_active = False
 
     def reset_stats(self):
         """Ініціалізувати статистику, що може змінюватися в грі."""
