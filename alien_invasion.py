@@ -111,22 +111,18 @@ class AlienInvasion:
 
     def _update_bullets(self):
         """Оновити позицію куль та позбавитися старих куль."""
-        # Оновити позиції куль.
         self.bullets.update()
 
-        # Позбавитися куль, що зникли.
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
-        # ВИПРАВЛЕНО: Цей виклик має бути ПОЗА циклом for!
         self._check_bullet_alien_collisions()
 
 
-
+    
     def _check_bullet_alien_collisions(self):
         """Реагувати на зіткнення куль з прибульцями."""
-        # Видалити всі кулі та прибульців, що зіткнулися.
         collisions = pygame.sprite.groupcollide(
                 self.bullets, self.aliens, True, True)
         
@@ -138,13 +134,19 @@ class AlienInvasion:
         
         if not self.aliens:
             # Знищити наявні кулі та створити новий флот.
-            self.bullets.empty()
-            self._create_fleet()
-            self.settings.increase_speed()
+            self._start_new_level()
 
-            # Збільшити рівень.
-            self.stats.level += 1
-            self.sb.prep_level()
+
+
+    def _start_new_level(self):
+        """Почати новий рівень гри."""
+        self.bullets.empty()
+        self._create_fleet()
+        self.settings.increase_speed()
+
+        # Збільшити рівень.
+        self.stats.level += 1
+        self.sb.prep_level()
         
 
 
@@ -167,26 +169,29 @@ class AlienInvasion:
         """Розпочати нову гру, коли гравець клацне Play."""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
+            self._start_game()
 
-            self.settings.initialize_dynamic_settings()
+            
 
-            # Анулювати статистику гри.
-            self.stats.reset_stats()
-            self.stats.game_active = True
-            self.sb.prep_score()
-            self.sb.prep_level()
-            self.sb.prep_ships()
+    def _start_game(self):
+        """Скидає статистику та запускає нову гру."""
+        self.settings.initialize_dynamic_settings()
+        self.stats.reset_stats()
+        self.stats.game_active = True
 
-            # Позбавитися надлишку прибульців та куль.
-            self.aliens.empty()
-            self.bullets.empty()
+        # Викликаємо новий загальний метод табло (створимо його в кроці 3)
+        self.sb.prep_images()
 
-            # Створити новий флот та помістити корабель у центр.
-            self._create_fleet()
-            self.ship.center_ship()
+        # Позбавитися надлишку прибульців та куль.
+        self.aliens.empty()
+        self.bullets.empty()
 
-            # Сховати курсор миші.
-            pygame.mouse.set_visible(False)
+        # Створити новий флот та помістити корабель у центр.
+        self._create_fleet()
+        self.ship.center_ship()
+
+        # Сховати курсор миші.
+        pygame.mouse.set_visible(False)
 
 
 

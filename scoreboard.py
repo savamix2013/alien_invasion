@@ -18,13 +18,8 @@ class Scoreboard:
         self.text_color = (30, 30, 30)
         self.font = pygame.font.SysFont(None, 48)
 
-        # Підготувати зображення початкового рахунку.
-        self.prep_score()
-        self.prep_high_score()
-
-        # Готуємо рівень та кораблі при запуску гри!
-        self.prep_level()
-        self.prep_ships()
+        # Підготувати початкові зображення для табло.
+        self.prep_images()
 
 
 
@@ -48,6 +43,7 @@ class Scoreboard:
         self.screen.blit(self.high_score_image, self.high_score_rect)
         self.screen.blit(self.level_image, self.level_rect)
         self.ships.draw(self.screen)
+
 
 
     def prep_high_score(self):
@@ -95,3 +91,12 @@ class Scoreboard:
             ship.rect.x = 10 + ship_number * ship.rect.width
             ship.rect.y = 10
             self.ships.add(ship)
+    
+
+
+    def prep_images(self):
+        """Підготувати всі зображення для табло."""
+        self.prep_score()
+        self.prep_high_score()
+        self.prep_level()
+        self.prep_ships()
