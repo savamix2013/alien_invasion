@@ -1,10 +1,12 @@
 import pygame
+from pygame.sprite import Sprite
 
-class Ship:
+class Ship(Sprite):
     """Клас керування кораблем."""
 
     def __init__(self, ai_game):
         """Ініціалізувати корабель та його початкову позицію."""
+        super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
         self.screen_rect = ai_game.screen.get_rect()
@@ -24,6 +26,7 @@ class Ship:
         self.moving_left = False
 
 
+
     def update(self):
         """
         Оновити позицію корабля на основі
@@ -39,9 +42,11 @@ class Ship:
         self.rect.x = self.x
 
 
+
     def blitme(self):
         """Намалювати корабель у поточному положенні."""
         self.screen.blit(self.image, self.rect)
+
 
     
     def center_ship(self):

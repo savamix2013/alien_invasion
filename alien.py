@@ -3,6 +3,7 @@ from pygame.sprite import Sprite
 
 class Alien(Sprite):
     """Клас, що представляє одного прибульця з флоту"""
+
     def __init__(self, ai_game):
         """Ініціалізувати прибульця та його початкове розташування."""
         super().__init__()
@@ -22,11 +23,13 @@ class Alien(Sprite):
         self.x = float(self.rect.x)
 
 
+
     def check_edges(self):
         """Повертає істину, якщо прибулець знаходиться на краю екрана."""
         screen_rect = self.screen.get_rect()
         if self.rect.right >= screen_rect.right or self.rect.left <= 0:
             return True
+
 
 
     def update(self):

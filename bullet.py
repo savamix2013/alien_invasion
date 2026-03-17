@@ -19,12 +19,16 @@ class Bullet(Sprite):
         # Зберігати позицію кулі як десяткове значення.
         self.y = float(self.rect.y)
 
+
+
     def update(self):
         """Посунути кулю нагору екраном."""
         #Оновити десяткову позицію кулі.
         self.y -= self.settings.bullet_speed
         #Оновити позицію rect.
         self.rect.y = self.y
+
+
 
     def draw_bullet(self):
         """Намалювати кулю на екрані."""
